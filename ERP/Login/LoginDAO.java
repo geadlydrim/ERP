@@ -6,4 +6,3 @@ public interface LoginDAO {
     void updateAccount(CustomerAccount account, CustomerAccount updatedAccount);
     void deleteAccount(CustomerAccount account);
 }
-// test
