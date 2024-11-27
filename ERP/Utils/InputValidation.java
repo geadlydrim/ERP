@@ -1,14 +1,4 @@
 package ERP.Utils;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-
-/**
- *
- * @author KEANUAGUSTIN
- */
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -51,16 +41,16 @@ public class InputValidation {
         return var1;
     }
     
-    int getIntInput(boolean signed, int range) {
+    public int getOption(boolean signed, int rangeLow, int rangeHigh) {
         int var1 = 0;
         boolean var2 = false;
 
         while(!var2) {
             if(signed == false){
                 var1 = getIntInput(signed);
-                if(var1 > range){
-                    System.out.println("Input out of range (0-" + range + ").");
-                    System.out.println("Please enter again: ");
+                if(var1 > rangeHigh || var1 < rangeLow){
+                    System.out.println("Input out of range (" + rangeLow + " - " + rangeHigh + ").");
+                    System.out.print("Please enter again: ");
                 }
                 else{
                     return var1;

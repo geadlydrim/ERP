@@ -1,5 +1,5 @@
 package ERP.Login;
-import ERP.Customer.*;
+import ERP.Accounts.CustomerAccount;
 
 public interface LoginDAO {
     void addAccount(CustomerAccount account);

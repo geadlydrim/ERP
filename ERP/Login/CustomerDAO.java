@@ -8,12 +8,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import ERP.Utils.InputValidation;
-
+import ERP.Accounts.CustomerAccTemp;
+import ERP.Accounts.CustomerAccount;
 import ERP.Customer.*;
 
 
-public class LoginDAOImpl implements LoginDAO {
-    private static final String FILE_PATH = "accountsDB.csv ";
+public class CustomerDAO implements LoginDAO {
+    private static final String FILE_PATH = "customer_acc_DB.csv";
+    private static final String FILE_PATH2 = "customer_acc_id.csv ";
 
     boolean checkFileExist(){
         File file = new File(FILE_PATH);
@@ -33,7 +35,7 @@ public class LoginDAOImpl implements LoginDAO {
             }
         } catch (IOException e) {
             if(!checkFileExist()){
-                System.out.println("accountsDB.csv file not found.");
+                System.out.println("file not found.");
             }
         }
 
@@ -42,9 +44,40 @@ public class LoginDAOImpl implements LoginDAO {
 
     private void writeCustomersToFile(Map<String,String> accounts) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            writer.write("id,username,password\n");
+            writer.write("username,password\n");
             for(String key : accounts.keySet()){
                 writer.write(key.toString() + "," + accounts.get(key).toString() + "\n");
+            }            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Map<String,Integer> readAccountId(){
+        Map<String,String> accounts = readAccountsFromFile();
+        Map<String, Integer> account_id = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH2))){
+            String line = reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                String username = data[0];
+                int id = Integer.parseInt(data[1]);
+                account_id.put(username, id);
+            }
+        }
+        catch(IOException e){
+            System.out.println("test");
+            e.printStackTrace();
+        }
+
+        return account_id;
+    }
+
+    private void writeRecordToFile(Map<String, Integer> account_id){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH2))) {
+            writer.write("username,id\n");
+            for(String key : account_id.keySet()){
+                writer.write(key.toString() + "," + account_id.get(key).toString() + "\n");
             }            
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,7 +87,10 @@ public class LoginDAOImpl implements LoginDAO {
     @Override
     public void addAccount(CustomerAccount account) {
         Map<String, String> accounts = readAccountsFromFile();
+        Map<String, Integer> account_id = readAccountId();
         accounts.put(account.getUsername(), account.getPassword());
+        account_id.put(account.getUsername(), account.getId());
+        writeRecordToFile(account_id);
         writeCustomersToFile(accounts);
         System.out.println("Account added successfully.");
     }
@@ -82,7 +118,7 @@ public class LoginDAOImpl implements LoginDAO {
     public boolean loginValid(CustomerAccount account){
         Map<String, String> accounts = readAccountsFromFile();
         if(accountExist(account)){
-            if(account.getPassword() == accounts.get(account.getUsername()))
+            if(account.getPassword().equals(accounts.get(account.getUsername())))
                 return true;
         }
         return false;
@@ -91,7 +127,7 @@ public class LoginDAOImpl implements LoginDAO {
     public static void main(String[] args) {
         CustomerAccount account;
         InputValidation input = new InputValidation();
-        LoginDAOImpl test = new LoginDAOImpl();
+        CustomerDAO test = new CustomerDAO();
         int option;
 
         while(true){

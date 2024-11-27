@@ -1,15 +1,13 @@
 package ERP.Customer;
 
-public class Customer {
+public class CustomerDT {
     private int id;
     private String name;
     private String email;
     private String phone;
     private String address;
 
-
-
-    public Customer(int id, String name, String email, String phone) {
+    public CustomerDT(int id, String name, String email, String phone) {
         this.id = id;
         this.name = name;
         this.email = email;
